@@ -533,6 +533,7 @@ GameObject:
   - component: {fileID: 1503292595}
   - component: {fileID: 1503292594}
   - component: {fileID: 1503292593}
+  - component: {fileID: 1503292597}
   - component: {fileID: 1503292596}
   m_Layer: 0
   m_Name: Player
@@ -627,6 +628,21 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1503292597
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1503292591}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3044f44f8a8741119fa370ce6662582f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _characterController: {fileID: 0}
+  _speed: 12
+  _velocityY: 0
 --- !u!1 &1611153073
 GameObject:
   m_ObjectHideFlags: 0
@@ -884,7 +900,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 2.223007, y: 1}
+    m_SensorSize: {x: 0.73763865, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0
