@@ -15,6 +15,10 @@ namespace Player
         [SerializeField] private float _maxFreeFallVelocityWithoutDamage = 10;
         [SerializeField] private float _speedPerLevel = 2;
         [SerializeField] private float _jumpStrengthPerLevel = 1.5f;
+        [SerializeField] private float _maxStamina;
+        [SerializeField] private float _currentStamina;
+        [SerializeField] private float _staminaPerLevel = 10;
+        [SerializeField] private float _additionalSprintSpeed = 1;
         private void Awake()
         {
             //Cursor.lockState = CursorLockMode.Locked;
@@ -27,10 +31,15 @@ namespace Player
         private void Start()
         {
             var stats = GetComponent<ObjectStats>();
-            _currentSpeed = stats.GetLevelOf(Attribute.AttributeType.agility) * _speedPerLevel;
+            var agility = stats.GetLevelOf(Attribute.AttributeType.agility);
+            _currentSpeed = agility * _speedPerLevel;
             stats.GetLevelUpEventOf(Attribute.AttributeType.agility).AddListener(IncreaceParametersByAgility);
+            _additionalSprintSpeed += agility;
             _jumpStrength = stats.GetLevelOf(Attribute.AttributeType.strenght) * _jumpStrengthPerLevel;
             stats.GetLevelUpEventOf(Attribute.AttributeType.strenght).AddListener(IncreaceJumpStrength);
+            _maxStamina = stats.GetLevelOf(Attribute.AttributeType.endurance) * _staminaPerLevel;
+            stats.GetLevelUpEventOf(Attribute.AttributeType.endurance).AddListener(IncreaceStamina);
+            _currentStamina = _maxStamina;
         }
         private void Update()
         {
@@ -65,17 +74,34 @@ namespace Player
         }
         private void SetMoveDirection()
         {
-            _moveDirection.x = Input.GetAxis("Horizontal") * _currentSpeed;
-            _moveDirection.z = Input.GetAxis("Vertical") * _currentSpeed;
+            var speed = _currentSpeed;
+            if (Input.GetKey(KeyCode.LeftShift) && _currentStamina > 0)
+            {
+                speed += _additionalSprintSpeed;
+                _currentStamina -= Time.deltaTime * speed;
+            }
+            else
+            {
+                _currentStamina += Time.deltaTime * _maxStamina/_staminaPerLevel;
+                if (_currentStamina > _maxStamina)
+                    _currentStamina = _maxStamina;
+            }
+            _moveDirection.x = Input.GetAxis("Horizontal") * speed;
+            _moveDirection.z = Input.GetAxis("Vertical") * speed;
             _moveDirection = transform.TransformDirection(_moveDirection);
         }
 
         private void IncreaceParametersByAgility(int level)
         {
             _currentSpeed = level * _speedPerLevel;
-            _maxFreeFallVelocityWithoutDamage += level;
+            _maxFreeFallVelocityWithoutDamage++;
+            _additionalSprintSpeed++;
         }
         private void IncreaceJumpStrength(int level)
             => _jumpStrength = level * _jumpStrengthPerLevel;
+        private void IncreaceStamina(int level)
+        {
+            _maxStamina = level * 10;
+        }
     }
 }

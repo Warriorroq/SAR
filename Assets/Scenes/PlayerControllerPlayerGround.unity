@@ -2674,6 +2674,10 @@ MonoBehaviour:
   _maxFreeFallVelocityWithoutDamage: 10
   _speedPerLevel: 2
   _jumpStrengthPerLevel: 1.5
+  _maxStamina: 0
+  _currentStamina: 0
+  _staminaPerLevel: 10
+  _additionalSprintSpeed: 0
 --- !u!114 &1503292598
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2688,8 +2692,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _speedVertical: 2
   _speedHorisontal: 1
-  _head: {fileID: 1730352345}
-  _maxAngle: 80
+  _head: {fileID: 1730352346}
+  _defauldFOV: 70
+  _fovPerLevel: 2
 --- !u!114 &1503292599
 MonoBehaviour:
   m_ObjectHideFlags: 0

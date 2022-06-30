@@ -1,4 +1,6 @@
+using Cinemachine;
 using UnityEngine;
+using ObjectAttributes;
 
 namespace Player
 {
@@ -6,8 +8,20 @@ namespace Player
     {
         [SerializeField] private float _speedVertical;
         [SerializeField] private float _speedHorisontal;
-        [SerializeField] private Transform _head;
-        [SerializeField] private float _maxAngle = 80f;
+        [SerializeField] private CinemachineVirtualCamera _head;
+
+        [SerializeField] private float _defauldFOV = 70f;
+
+        [SerializeField] private float _fovPerLevel = 2f;
+        //[SerializeField] private float _maxAngle = 80f;
+        private void Start()
+        {
+            var stats = GetComponent<ObjectStats>();
+            AddFOV(stats.GetLevelOf(Attribute.AttributeType.perception));
+            stats.GetLevelUpEventOf(Attribute.AttributeType.perception).AddListener(AddFOV);
+        }
+        private void AddFOV(int level)
+            => _head.m_Lens.FieldOfView = _defauldFOV + level * _fovPerLevel;
         private void Update()
         {
             RotateBody();
@@ -16,7 +30,7 @@ namespace Player
         private void RotateHead()
         {
             float x = _speedVertical * -Input.GetAxis("Mouse Y");
-            _head.Rotate(x, 0, 0);
+            _head.transform.Rotate(x, 0, 0);
         }
         private void RotateBody()
         {
