@@ -344,7 +344,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: -0.00094247423}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: -983, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &548778285
 MonoBehaviour:
@@ -364,7 +364,7 @@ MonoBehaviour:
     m_Top: 33
     m_Bottom: 0
   m_ChildAlignment: 0
-  m_Spacing: 0
+  m_Spacing: 90
   m_ChildForceExpandWidth: 0
   m_ChildForceExpandHeight: 0
   m_ChildControlWidth: 0
@@ -738,7 +738,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   lobbyName: {fileID: 1424815559}
   playerListViewContent: {fileID: 548778283}
-  playerListItemPrefab: {fileID: 759757945980273833, guid: d3c02578a3120eb4298ee8c729806bd3, type: 3}
+  playerListItemPrefab: {fileID: 6025728549078684505, guid: 38a94a272a08f1b4cbf7325f85732634, type: 3}
   localPlayerObject: {fileID: 0}
   currentLobbyID: 0
   playerItemCreated: 0
