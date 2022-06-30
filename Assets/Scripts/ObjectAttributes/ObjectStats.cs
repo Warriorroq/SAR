@@ -8,7 +8,7 @@ namespace ObjectAttributes
     {
         [SerializeField] private AttributesPreset _attributesPreset;
         private Dictionary<Attribute.AttributeType, Attribute> _attributes;
-        public int getLevelOf(Attribute.AttributeType type)
+        public int GetLevelOf(Attribute.AttributeType type)
             => _attributes[type].Level;
         public void ConnectToLevelUpOf(Attribute.AttributeType type, UnityAction<int> action)
             =>_attributes[type].levelUp.AddListener(action);

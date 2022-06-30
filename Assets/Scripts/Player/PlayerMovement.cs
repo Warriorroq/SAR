@@ -45,8 +45,8 @@ namespace Player
         }
         private void FallDamage()
         {
-            if (_characterController.velocity.y < -_maxFreeFallVelocityWithoutDamage) ;
-                _playersHealth.TakeDamage(_characterController.velocity.y - _maxFreeFallVelocityWithoutDamage);
+            if (_characterController.velocity.y < -_maxFreeFallVelocityWithoutDamage)
+                _playersHealth.TakeDamage(-_characterController.velocity.y - _maxFreeFallVelocityWithoutDamage);
         }
         private void Jump()
         {

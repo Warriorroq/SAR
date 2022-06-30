@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.Events;
 namespace ObjectAttributes
@@ -10,20 +11,21 @@ namespace ObjectAttributes
         [SerializeField] private bool _godMode = false;
         [SerializeField] private float _maxHp;
         [SerializeField] private float _currentHp;
-        private void Awake()
-        {
-            var stats = GetComponent<ObjectStats>();
-            _maxHp = stats.getLevelOf(Attribute.AttributeType.health) * 20;
-            _currentHp = _maxHp;
-        }
+        [SerializeField] private float _hpPerLevel = 20;
         public void TakeDamage(float Amount)
         {
             if (_godMode)
                 return;
-            _currentHp -= Amount;
+            _currentHp -= Mathf.Clamp(Amount,0, _maxHp);
             hpChanged.Invoke(_currentHp);
-            if (_currentHp < 0) 
+            if (_currentHp <= 0) 
                 onDeath.Invoke();
+        }
+        private void Start()
+        {
+            var stats = GetComponent<ObjectStats>();
+            _maxHp = stats.GetLevelOf(Attribute.AttributeType.health) * _hpPerLevel;
+            _currentHp = _maxHp;
         }
     }
 }
