@@ -26,6 +26,9 @@ namespace ObjectAttributes
             var stats = GetComponent<ObjectStats>();
             _maxHp = stats.GetLevelOf(Attribute.AttributeType.health) * _hpPerLevel;
             _currentHp = _maxHp;
+            stats.GetLevelUpEventOf(Attribute.AttributeType.health).AddListener(IncreaceMaxHealth);
         }
+        private void IncreaceMaxHealth(int level)
+            =>_maxHp = level * _hpPerLevel;
     }
 }

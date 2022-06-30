@@ -10,18 +10,28 @@ namespace Player
         [SerializeField] private CharacterController _characterController;
         [SerializeField] private HealthBehavior _playersHealth;
         [SerializeField] private Vector3 _moveDirection;
-        [SerializeField] private float _jumpSpeed = 5;
+        [SerializeField] private float _jumpStrength = 5;
         [SerializeField] private float _currentSpeed = 12;
         [SerializeField] private float _maxFreeFallVelocityWithoutDamage = 10;
+        [SerializeField] private float _speedPerLevel = 2;
+        [SerializeField] private float _jumpStrengthPerLevel = 1.5f;
         private void Awake()
         {
-            Cursor.lockState = CursorLockMode.Locked;
+            //Cursor.lockState = CursorLockMode.Locked;
             if(_characterController == null)
                 _characterController = GetComponent<CharacterController>();
             if (_playersHealth == null)
                 _playersHealth = GetComponent<HealthBehavior>();
         }
 
+        private void Start()
+        {
+            var stats = GetComponent<ObjectStats>();
+            _currentSpeed = stats.GetLevelOf(Attribute.AttributeType.agility) * _speedPerLevel;
+            stats.GetLevelUpEventOf(Attribute.AttributeType.agility).AddListener(IncreaceParametersByAgility);
+            _jumpStrength = stats.GetLevelOf(Attribute.AttributeType.strenght) * _jumpStrengthPerLevel;
+            stats.GetLevelUpEventOf(Attribute.AttributeType.strenght).AddListener(IncreaceJumpStrength);
+        }
         private void Update()
         {
             SetMoveDirection();
@@ -51,7 +61,7 @@ namespace Player
         private void Jump()
         {
             if (Input.GetButton("Jump"))
-                _moveDirection.y = _jumpSpeed;
+                _moveDirection.y = _jumpStrength;
         }
         private void SetMoveDirection()
         {
@@ -59,5 +69,13 @@ namespace Player
             _moveDirection.z = Input.GetAxis("Vertical") * _currentSpeed;
             _moveDirection = transform.TransformDirection(_moveDirection);
         }
+
+        private void IncreaceParametersByAgility(int level)
+        {
+            _currentSpeed = level * _speedPerLevel;
+            _maxFreeFallVelocityWithoutDamage += level;
+        }
+        private void IncreaceJumpStrength(int level)
+            => _jumpStrength = level * _jumpStrengthPerLevel;
     }
 }

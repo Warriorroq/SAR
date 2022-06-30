@@ -16,6 +16,11 @@ namespace ObjectAttributes
         public UnityEvent<int> levelUp;
         [SerializeField]private int _level = 1;
         [SerializeField]private int _maxLevel = 10;
+
+        public Attribute()
+        {
+            levelUp = new();
+        }
         public void LevelUp()
         {
             if (_level == _maxLevel)
