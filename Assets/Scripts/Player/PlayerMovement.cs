@@ -1,20 +1,25 @@
+using ObjectAttributes;
 using UnityEngine;
 
 namespace Player
 {
     [RequireComponent(typeof(CharacterController))]
+    [RequireComponent(typeof(HealthBehavior))]
     public class PlayerMovement : MonoBehaviour
     { 
         [SerializeField] private CharacterController _characterController;
+        [SerializeField] private HealthBehavior _playersHealth;
         [SerializeField] private Vector3 _moveDirection;
         [SerializeField] private float _jumpSpeed = 5;
         [SerializeField] private float _currentSpeed = 12;
-        [SerializeField] private float _maxDamageFreeFallVelocity = 10;
+        [SerializeField] private float _maxFreeFallVelocityWithoutDamage = 10;
         private void Awake()
         {
             Cursor.lockState = CursorLockMode.Locked;
             if(_characterController == null)
                 _characterController = GetComponent<CharacterController>();
+            if (_playersHealth == null)
+                _playersHealth = GetComponent<HealthBehavior>();
         }
 
         private void Update()
@@ -40,8 +45,8 @@ namespace Player
         }
         private void FallDamage()
         {
-            if (_characterController.velocity.y < -_maxDamageFreeFallVelocity) ;
-            //param.TakeFallDamage((int)Mathf.Abs((controller.velocity.y / 10f)));
+            if (_characterController.velocity.y < -_maxFreeFallVelocityWithoutDamage) ;
+                _playersHealth.TakeDamage(_characterController.velocity.y - _maxFreeFallVelocityWithoutDamage);
         }
         private void Jump()
         {
