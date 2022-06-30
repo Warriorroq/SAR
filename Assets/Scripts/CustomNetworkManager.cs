@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -7,7 +6,7 @@ using Mirror;
 
 public class CustomNetworkManager : NetworkManager
 {
-    [SerializeField] private PlayerObjectController gamePlayerPrefab;
+    [SerializeField] private PlayerObjectController _gamePlayerPrefab;
 
     public List<PlayerObjectController> gamePlayers { get; } = new();
 
@@ -15,7 +14,7 @@ public class CustomNetworkManager : NetworkManager
     {
         if (SceneManager.GetActiveScene().name == "Lobby")
         {
-            PlayerObjectController gamePlayerInstance = Instantiate(gamePlayerPrefab);
+            PlayerObjectController gamePlayerInstance = Instantiate(_gamePlayerPrefab);
 
             gamePlayerInstance.connectionID = conn.connectionId;
             gamePlayerInstance.playerID = gamePlayers.Count + 1;
