@@ -10,42 +10,42 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 02efe56c58bd4a958adcbd63cae1983a, type: 3}
-  m_Name: StandartPreset
+  m_Name: MaxPreset
   m_EditorClassIdentifier: 
   _attributes:
   - _type: 0
     levelUp:
       m_PersistentCalls:
         m_Calls: []
-    _level: 1
+    _level: 8
     _maxLevel: 10
   - _type: 1
     levelUp:
       m_PersistentCalls:
         m_Calls: []
-    _level: 4
+    _level: 8
     _maxLevel: 10
   - _type: 2
     levelUp:
       m_PersistentCalls:
         m_Calls: []
-    _level: 4
+    _level: 8
     _maxLevel: 10
   - _type: 3
     levelUp:
       m_PersistentCalls:
         m_Calls: []
-    _level: 5
+    _level: 8
     _maxLevel: 10
   - _type: 4
     levelUp:
       m_PersistentCalls:
         m_Calls: []
-    _level: 1
+    _level: 8
     _maxLevel: 10
   - _type: 5
     levelUp:
       m_PersistentCalls:
         m_Calls: []
-    _level: 1
+    _level: 8
     _maxLevel: 10

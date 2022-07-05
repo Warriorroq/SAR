@@ -372,7 +372,7 @@ RectTransform:
   m_Children:
   - {fileID: 125192899}
   m_Father: {fileID: 355498652}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
@@ -967,12 +967,12 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 654671673}
   - {fileID: 1824511405}
   - {fileID: 61891689}
   - {fileID: 536795530}
   - {fileID: 488844329}
   - {fileID: 1826245085}
-  - {fileID: 654671673}
   m_Father: {fileID: 1474471976}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1187,7 +1187,7 @@ RectTransform:
   m_Children:
   - {fileID: 361869349}
   m_Father: {fileID: 355498652}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
@@ -1321,7 +1321,7 @@ RectTransform:
   m_Children:
   - {fileID: 567599303}
   m_Father: {fileID: 355498652}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
@@ -1784,7 +1784,7 @@ RectTransform:
   m_Children:
   - {fileID: 1502875826}
   m_Father: {fileID: 355498652}
-  m_RootOrder: 5
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
@@ -2562,6 +2562,7 @@ GameObject:
   - component: {fileID: 1503292600}
   - component: {fileID: 1503292598}
   - component: {fileID: 1503292597}
+  - component: {fileID: 1503292601}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -2669,15 +2670,9 @@ MonoBehaviour:
   _characterController: {fileID: 0}
   _playersHealth: {fileID: 0}
   _moveDirection: {x: 0, y: 0, z: 0}
-  _jumpStrength: 5
-  _currentSpeed: 12
-  _maxFreeFallVelocityWithoutDamage: 10
-  _speedPerLevel: 2
-  _jumpStrengthPerLevel: 1.5
-  _maxStamina: 0
-  _currentStamina: 0
-  _staminaPerLevel: 10
-  _additionalSprintSpeed: 0
+  _forceDirection: {x: 0, y: 0, z: 0}
+  _params: {fileID: 0}
+  _movementState: 0
 --- !u!114 &1503292598
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2707,7 +2702,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4580cbb9192c446380582877085244cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _attributesPreset: {fileID: 11400000, guid: 5d532626be3d45a498be2906d051a23f, type: 2}
+  _attributesPreset: {fileID: 11400000, guid: 7bbbb9f90e8ab9947afd584168f0f3b7, type: 2}
 --- !u!114 &1503292600
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2730,6 +2725,27 @@ MonoBehaviour:
   _maxHp: 0
   _currentHp: 0
   _hpPerLevel: 20
+--- !u!114 &1503292601
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1503292591}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11b7e9666c0491d458ab264001f36e75, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  jumpStrength: 5
+  currentSpeed: 12
+  maxFreeFallVelocityWithoutDamage: 10
+  currentStamina: 0
+  maxStamina: 0
+  _speedPerLevel: 2
+  _jumpStrengthPerLevel: 1.5
+  _staminaPerLevel: 10
+  _additionalSprintSpeed: 1
 --- !u!1 &1611153073
 GameObject:
   m_ObjectHideFlags: 0
@@ -3151,7 +3167,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 2.223007, y: 1}
+    m_SensorSize: {x: 1.1553986, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0
@@ -3193,7 +3209,7 @@ RectTransform:
   m_Children:
   - {fileID: 98858505}
   m_Father: {fileID: 355498652}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
@@ -3327,7 +3343,7 @@ RectTransform:
   m_Children:
   - {fileID: 1466787039}
   m_Father: {fileID: 355498652}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}

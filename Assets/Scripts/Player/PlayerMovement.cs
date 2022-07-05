@@ -1,3 +1,4 @@
+using System;
 using ObjectAttributes;
 using UnityEngine;
 
@@ -5,103 +6,99 @@ namespace Player
 {
     [RequireComponent(typeof(CharacterController))]
     [RequireComponent(typeof(HealthBehavior))]
+    [RequireComponent(typeof(PlayerParams))]
     public class PlayerMovement : MonoBehaviour
     { 
         [SerializeField] private CharacterController _characterController;
         [SerializeField] private HealthBehavior _playersHealth;
         [SerializeField] private Vector3 _moveDirection;
-        [SerializeField] private float _jumpStrength = 5;
-        [SerializeField] private float _currentSpeed = 12;
-        [SerializeField] private float _maxFreeFallVelocityWithoutDamage = 10;
-        [SerializeField] private float _speedPerLevel = 2;
-        [SerializeField] private float _jumpStrengthPerLevel = 1.5f;
-        [SerializeField] private float _maxStamina;
-        [SerializeField] private float _currentStamina;
-        [SerializeField] private float _staminaPerLevel = 10;
-        [SerializeField] private float _additionalSprintSpeed = 1;
+        [SerializeField] private Vector3 _forceDirection;
+        [SerializeField] private PlayerParams _params;
+        [SerializeField] private PlayerMovementState _movementState;
+        public void AddForce(Vector3 force)
+            =>_forceDirection += transform.TransformDirection(force);
         private void Awake()
         {
-            //Cursor.lockState = CursorLockMode.Locked;
+            if (_params == null)
+                _params = GetComponent<PlayerParams>();
             if(_characterController == null)
                 _characterController = GetComponent<CharacterController>();
             if (_playersHealth == null)
                 _playersHealth = GetComponent<HealthBehavior>();
         }
-
-        private void Start()
-        {
-            var stats = GetComponent<ObjectStats>();
-            var agility = stats.GetLevelOf(Attribute.AttributeType.agility);
-            _currentSpeed = agility * _speedPerLevel;
-            stats.GetLevelUpEventOf(Attribute.AttributeType.agility).AddListener(IncreaceParametersByAgility);
-            _additionalSprintSpeed += agility;
-            _jumpStrength = stats.GetLevelOf(Attribute.AttributeType.strenght) * _jumpStrengthPerLevel;
-            stats.GetLevelUpEventOf(Attribute.AttributeType.strenght).AddListener(IncreaceJumpStrength);
-            _maxStamina = stats.GetLevelOf(Attribute.AttributeType.endurance) * _staminaPerLevel;
-            stats.GetLevelUpEventOf(Attribute.AttributeType.endurance).AddListener(IncreaceStamina);
-            _currentStamina = _maxStamina;
-        }
         private void Update()
         {
             SetMoveDirection();
             Grounded();
-            if(_characterController.enabled)
-                _characterController.Move(_moveDirection * Time.deltaTime);
+            if (_moveDirection.sqrMagnitude < .1f && _forceDirection.sqrMagnitude < .1f)
+                _movementState = PlayerMovementState.Idle;
+            if (_characterController.enabled)
+                _characterController.Move((_moveDirection + _forceDirection) * Time.deltaTime);
         }
         private void Grounded()
         {
             if (_characterController.isGrounded)
             {
+                _forceDirection = Vector3.zero;
                 FallDamage();
                 Jump();
-                if(_moveDirection.y < 0)
-                    _moveDirection.y = 0;
             }
             else
             {
-                _moveDirection.y += Physics.gravity.y * Time.deltaTime;
+                if (_forceDirection.y > 1f)
+                    _movementState = PlayerMovementState.Jump;
+                else if(_forceDirection.y < -1f)
+                    _movementState = PlayerMovementState.Falling;
+                
+                _forceDirection.y += Physics.gravity.y * Time.deltaTime;
             }
         }
         private void FallDamage()
         {
-            if (_characterController.velocity.y < -_maxFreeFallVelocityWithoutDamage)
-                _playersHealth.TakeDamage(-_characterController.velocity.y - _maxFreeFallVelocityWithoutDamage);
+            if (_characterController.velocity.y < -_params.maxFreeFallVelocityWithoutDamage)
+                _playersHealth.TakeDamage(-_characterController.velocity.y -_params.maxFreeFallVelocityWithoutDamage);
         }
         private void Jump()
         {
             if (Input.GetButton("Jump"))
-                _moveDirection.y = _jumpStrength;
+                _forceDirection.y = _params.jumpStrength;
         }
         private void SetMoveDirection()
         {
-            var speed = _currentSpeed;
-            if (Input.GetKey(KeyCode.LeftShift) && _currentStamina > 0)
+            var speed = _params.currentSpeed;
+            if (_characterController.isGrounded)
             {
-                speed += _additionalSprintSpeed;
-                _currentStamina -= Time.deltaTime * speed;
+                if (_movementState != PlayerMovementState.Running && Input.GetKey(KeyCode.LeftShift) && _params.currentStamina > _params.maxStamina/4)
+                    _movementState = PlayerMovementState.Running;
+                else if(_params.currentStamina < 0)
+                    _movementState = PlayerMovementState.Idle;
+            }
+            if (_movementState == PlayerMovementState.Running)
+            {
+                speed = _params.SprintSpeed;
+                _params.currentStamina -= Time.deltaTime * speed;
             }
             else
             {
-                _currentStamina += Time.deltaTime * _maxStamina/_staminaPerLevel;
-                if (_currentStamina > _maxStamina)
-                    _currentStamina = _maxStamina;
+                _params.currentStamina += Time.deltaTime;
+                if (_params.currentStamina > _params.maxStamina)
+                    _params.currentStamina = _params.maxStamina;
+                if (_moveDirection.sqrMagnitude > .1f && _forceDirection.sqrMagnitude < .1f)
+                    _movementState = PlayerMovementState.Walking;
             }
+            Debug.Log($"{speed} {_params.currentStamina}");
             _moveDirection.x = Input.GetAxis("Horizontal") * speed;
             _moveDirection.z = Input.GetAxis("Vertical") * speed;
             _moveDirection = transform.TransformDirection(_moveDirection);
         }
 
-        private void IncreaceParametersByAgility(int level)
+        private enum PlayerMovementState
         {
-            _currentSpeed = level * _speedPerLevel;
-            _maxFreeFallVelocityWithoutDamage++;
-            _additionalSprintSpeed++;
-        }
-        private void IncreaceJumpStrength(int level)
-            => _jumpStrength = level * _jumpStrengthPerLevel;
-        private void IncreaceStamina(int level)
-        {
-            _maxStamina = level * 10;
+            Idle = 0,
+            Running = 1,
+            Falling = 2,
+            Jump = 3,
+            Walking = 4
         }
     }
 }
