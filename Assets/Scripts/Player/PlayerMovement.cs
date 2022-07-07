@@ -1,6 +1,7 @@
 using System;
 using ObjectAttributes;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Player
 {
@@ -8,7 +9,8 @@ namespace Player
     [RequireComponent(typeof(HealthBehavior))]
     [RequireComponent(typeof(PlayerParams))]
     public class PlayerMovement : MonoBehaviour
-    { 
+    {
+        public UnityEvent<PlayerMovementState> onStateChange;
         [SerializeField] private CharacterController _characterController;
         [SerializeField] private HealthBehavior _playersHealth;
         [SerializeField] private Vector3 _moveDirection;
@@ -17,6 +19,12 @@ namespace Player
         [SerializeField] private PlayerMovementState _movementState;
         public void AddForce(Vector3 force)
             =>_forceDirection += transform.TransformDirection(force);
+
+        private void ChangeState(PlayerMovementState state)
+        {
+            _movementState = state;
+            onStateChange.Invoke(_movementState);
+        }
         private void Awake()
         {
             if (_params == null)
@@ -31,7 +39,7 @@ namespace Player
             SetMoveDirection();
             Grounded();
             if (_moveDirection.sqrMagnitude < .1f && _forceDirection.sqrMagnitude < .1f)
-                _movementState = PlayerMovementState.Idle;
+                ChangeState(PlayerMovementState.Idle);
             if (_characterController.enabled)
                 _characterController.Move((_moveDirection + _forceDirection) * Time.deltaTime);
         }
@@ -46,10 +54,9 @@ namespace Player
             else
             {
                 if (_forceDirection.y > 1f)
-                    _movementState = PlayerMovementState.Jump;
+                    ChangeState(PlayerMovementState.Jump);
                 else if(_forceDirection.y < -1f)
-                    _movementState = PlayerMovementState.Falling;
-                
+                    ChangeState(PlayerMovementState.Falling);
                 _forceDirection.y += Physics.gravity.y * Time.deltaTime;
             }
         }
@@ -69,9 +76,9 @@ namespace Player
             if (_characterController.isGrounded)
             {
                 if (_movementState != PlayerMovementState.Running && Input.GetKey(KeyCode.LeftShift) && _params.currentStamina > _params.maxStamina/4)
-                    _movementState = PlayerMovementState.Running;
+                    ChangeState(PlayerMovementState.Running);
                 else if(_params.currentStamina < 0)
-                    _movementState = PlayerMovementState.Idle;
+                    ChangeState(PlayerMovementState.Idle);
             }
             if (_movementState == PlayerMovementState.Running)
             {
@@ -84,15 +91,13 @@ namespace Player
                 if (_params.currentStamina > _params.maxStamina)
                     _params.currentStamina = _params.maxStamina;
                 if (_moveDirection.sqrMagnitude > .1f && _forceDirection.sqrMagnitude < .1f)
-                    _movementState = PlayerMovementState.Walking;
+                    ChangeState(PlayerMovementState.Walking);
             }
-            Debug.Log($"{speed} {_params.currentStamina}");
             _moveDirection.x = Input.GetAxis("Horizontal") * speed;
             _moveDirection.z = Input.GetAxis("Vertical") * speed;
             _moveDirection = transform.TransformDirection(_moveDirection);
         }
-
-        private enum PlayerMovementState
+        public enum PlayerMovementState
         {
             Idle = 0,
             Running = 1,
